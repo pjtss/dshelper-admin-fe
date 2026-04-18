@@ -15,7 +15,7 @@ export default function TextInput({ label, value, onChange, placeholder }) {
           width: "100%",
           padding: "12px 14px",
           borderRadius: 8,
-          border: "1px solid #c8e6c9",
+          border: "1px solid #bfdbfe",
           background: "#fff",
         }}
       />

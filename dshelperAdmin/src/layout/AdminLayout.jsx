@@ -6,7 +6,7 @@ export default function AdminLayout({ children }) {
     <div
       style={{
         minHeight: "100vh",
-        background: "#F6FFF6",
+        background: "#ffffff",
         display: "flex",
         flexDirection: "row",
       }}

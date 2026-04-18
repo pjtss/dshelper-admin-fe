@@ -7,7 +7,7 @@ export default function AdminSidebar() {
       style={{
         width: "240px",
         minHeight: "100vh",
-        background: "#66CC66",
+        background: "#2563eb",
         padding: "20px",
         color: "white",
         display: "flex",
@@ -35,7 +35,7 @@ const linkStyle = {
   textDecoration: "none",
   padding: "10px 12px",
   borderRadius: "8px",
-  background: "rgba(255,255,255,0.15)",
+  background: "rgba(255,255,255,0.14)",
   transition: "0.2s",
   display: "block",
 };

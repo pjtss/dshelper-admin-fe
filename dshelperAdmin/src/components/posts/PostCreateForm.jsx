@@ -31,8 +31,8 @@ export default function PostCreateForm() {
         background: "#fff",
         padding: 24,
         borderRadius: 14,
-        border: "1px solid #e8f5e9",
-        boxShadow: "0 3px 10px rgba(0,0,0,0.07)",
+        border: "1px solid #dbeafe",
+        boxShadow: "0 12px 32px rgba(37, 99, 235, 0.08)",
       }}
     >
       <h2
@@ -40,7 +40,7 @@ export default function PostCreateForm() {
           fontSize: 22,
           marginBottom: 20,
           fontWeight: 700,
-          color: "#4CAF50",
+          color: "#1d4ed8",
         }}
       >
         ✏️ 게시글 작성하기

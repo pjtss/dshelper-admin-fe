@@ -6,7 +6,7 @@ export default function PostCreatePage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#f6fff6",
+        background: "#ffffff",
         padding: "40px 20px",
         display: "flex",
         justifyContent: "center",

@@ -6,8 +6,8 @@ export default function AdminCard({ children }) {
         background: "#fff",
         padding: "20px",
         borderRadius: "14px",
-        border: "1px solid #d6f5d6",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+        border: "1px solid #dbeafe",
+        boxShadow: "0 10px 30px rgba(37, 99, 235, 0.08)",
         marginBottom: "24px",
       }}
     >

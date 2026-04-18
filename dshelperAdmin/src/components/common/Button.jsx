@@ -9,7 +9,7 @@ export default function Button({ children, onClick, disabled }) {
         padding: "14px 0",
         borderRadius: 10,
         border: "none",
-        background: disabled ? "#A5D6A7" : "#66CC66",
+        background: disabled ? "#93c5fd" : "#2563eb",
         color: "#fff",
         fontSize: 16,
         fontWeight: 700,
