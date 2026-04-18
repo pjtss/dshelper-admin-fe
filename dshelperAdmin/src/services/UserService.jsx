@@ -1,6 +1,6 @@
 ﻿import BaseApi from '@/api/BaseApi.jsx';
-import { persistAuthTokensFromResponse } from '@/utils/authResponse.js';
 import { clearAuthTokens } from '@/utils/tokenStorage.js';
+import { redirectToKakaoLogin } from '@/services/KakaoAuthService.js';
 
 export const join = async (files) => {
   const dto = {
@@ -52,15 +52,7 @@ export const login = async () => {
   });
 };
 
-export const kakaoLogin = async () => {
-  try {
-    const response = await BaseApi.get("/oauth/kakao/login-url");
-    return persistAuthTokensFromResponse(response.data);
-  } catch (error) {
-    console.error("카카오 로그인 실패", error);
-    throw error;
-  }
-};
+export const kakaoLogin = () => redirectToKakaoLogin();
 
 export const naverLogin = async () => {
   try {

@@ -12,6 +12,17 @@ import {
   persistAuthTokensFromResponse,
 } from "../src/utils/authResponse.js";
 import { initializeAuthLifecycle } from "../src/utils/authLifecycle.js";
+import {
+  KAKAO_AUTHORIZE_URL,
+  KAKAO_REDIRECT_PATH,
+  createKakaoLoginUrl,
+  extractKakaoCode,
+  getKakaoRedirectUri,
+} from "../src/utils/kakaoAuth.js";
+import {
+  handleKakaoLoginCallback,
+  requestKakaoTokens,
+} from "../src/utils/kakaoLoginFlow.js";
 
 function createStorageMock() {
   const store = new Map();
@@ -48,9 +59,17 @@ function createWindowMock() {
   };
 }
 
-function runTest(name, fn) {
+function createLocationMock(overrides = {}) {
+  return {
+    origin: "http://localhost:5173",
+    href: "http://localhost:5173",
+    ...overrides,
+  };
+}
+
+async function runTest(name, fn) {
   try {
-    fn();
+    await fn();
     console.log(`PASS ${name}`);
   } catch (error) {
     console.error(`FAIL ${name}`);
@@ -58,7 +77,7 @@ function runTest(name, fn) {
   }
 }
 
-runTest("saveAuthTokens stores accessToken and refreshToken in localStorage", () => {
+await runTest("saveAuthTokens stores accessToken and refreshToken in localStorage", async () => {
   const storage = createStorageMock();
 
   saveAuthTokens({ accessToken: "access-token", refreshToken: "refresh-token" }, storage);
@@ -67,7 +86,7 @@ runTest("saveAuthTokens stores accessToken and refreshToken in localStorage", ()
   assert.equal(storage.getItem(REFRESH_TOKEN_KEY), "refresh-token");
 });
 
-runTest("applyAuthorizationHeader sets Authorization header from localStorage", () => {
+await runTest("applyAuthorizationHeader sets Authorization header from localStorage", async () => {
   const storage = createStorageMock();
   saveAuthTokens({ accessToken: "header-token", refreshToken: "refresh-token" }, storage);
 
@@ -86,7 +105,7 @@ runTest("applyAuthorizationHeader sets Authorization header from localStorage", 
   });
 });
 
-runTest("extractAuthTokens parses kakao login response tokens", () => {
+await runTest("extractAuthTokens parses kakao login response tokens", async () => {
   const tokens = extractAuthTokens({
     accessToken: "parsed-access-token",
     refreshToken: "parsed-refresh-token",
@@ -98,7 +117,7 @@ runTest("extractAuthTokens parses kakao login response tokens", () => {
   });
 });
 
-runTest("persistAuthTokensFromResponse saves login response tokens in localStorage", () => {
+await runTest("persistAuthTokensFromResponse saves login response tokens in localStorage", async () => {
   const storage = createStorageMock();
 
   const tokens = persistAuthTokensFromResponse(
@@ -117,7 +136,7 @@ runTest("persistAuthTokensFromResponse saves login response tokens in localStora
   assert.equal(storage.getItem(REFRESH_TOKEN_KEY), "stored-refresh-token");
 });
 
-runTest("initializeAuthLifecycle clears tokens when browser close event fires", () => {
+await runTest("initializeAuthLifecycle clears tokens when browser close event fires", async () => {
   const storage = createStorageMock();
   const targetWindow = createWindowMock();
 
@@ -130,7 +149,7 @@ runTest("initializeAuthLifecycle clears tokens when browser close event fires", 
   assert.equal(storage.getItem(REFRESH_TOKEN_KEY), null);
 });
 
-runTest("clearAuthTokens removes tokens explicitly", () => {
+await runTest("clearAuthTokens removes tokens explicitly", async () => {
   const storage = createStorageMock();
   saveAuthTokens({ accessToken: "access-token", refreshToken: "refresh-token" }, storage);
 
@@ -138,4 +157,73 @@ runTest("clearAuthTokens removes tokens explicitly", () => {
 
   assert.equal(storage.getItem(ACCESS_TOKEN_KEY), null);
   assert.equal(storage.getItem(REFRESH_TOKEN_KEY), null);
+});
+
+await runTest("createKakaoLoginUrl builds Kakao authorize URL with redirectUri", async () => {
+  const location = createLocationMock();
+  const loginUrl = createKakaoLoginUrl(location);
+  const parsedUrl = new URL(loginUrl);
+
+  assert.equal(`${parsedUrl.origin}${parsedUrl.pathname}`, KAKAO_AUTHORIZE_URL);
+  assert.equal(parsedUrl.searchParams.get("redirect_uri"), `${location.origin}${KAKAO_REDIRECT_PATH}`);
+  assert.equal(parsedUrl.searchParams.get("response_type"), "code");
+});
+
+await runTest("extractKakaoCode reads authorization code from callback query", async () => {
+  assert.equal(extractKakaoCode("?code=test-kakao-code"), "test-kakao-code");
+});
+
+await runTest("requestKakaoTokens sends code and redirectUri to backend and stores tokens", async () => {
+  const storage = createStorageMock();
+  const location = createLocationMock();
+  const requests = [];
+  const apiClient = {
+    async post(url, body) {
+      requests.push({ url, body });
+      return {
+        data: {
+          accessToken: "backend-access-token",
+          refreshToken: "backend-refresh-token",
+        },
+      };
+    },
+  };
+
+  const tokens = await requestKakaoTokens(apiClient, "callback-code", location, storage);
+
+  assert.deepEqual(tokens, {
+    accessToken: "backend-access-token",
+    refreshToken: "backend-refresh-token",
+  });
+  assert.deepEqual(requests, [{
+    url: "/oauth/kakao/exchange",
+    body: {
+      code: "callback-code",
+      redirectUri: getKakaoRedirectUri(location),
+    },
+  }]);
+  assert.equal(storage.getItem(ACCESS_TOKEN_KEY), "backend-access-token");
+  assert.equal(storage.getItem(REFRESH_TOKEN_KEY), "backend-refresh-token");
+});
+
+await runTest("handleKakaoLoginCallback extracts code and exchanges it for tokens", async () => {
+  const storage = createStorageMock();
+  const location = createLocationMock();
+  const apiClient = {
+    async post() {
+      return {
+        data: {
+          accessToken: "callback-access-token",
+          refreshToken: "callback-refresh-token",
+        },
+      };
+    },
+  };
+
+  const tokens = await handleKakaoLoginCallback("?code=callback-code", apiClient, location, storage);
+
+  assert.deepEqual(tokens, {
+    accessToken: "callback-access-token",
+    refreshToken: "callback-refresh-token",
+  });
 });
