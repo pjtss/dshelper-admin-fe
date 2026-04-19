@@ -1,19 +1,77 @@
-import {join, login, kakaoLogin, naverLogin, logout} from '@/services/UserService.jsx';
-import InquiryList from '@/components/admin/InquiryList.jsx';
-import AdminReservations from '@/services/PersonalReservationService';
+﻿import { join, login, kakaoLogin, naverLogin, logout } from '@/services/UserService.jsx';
+import { useNavigate } from 'react-router-dom';
 
-export default function dshelper() {
+export default function Dshelper() {
+  const navigate = useNavigate();
 
-    return (
+  const quickActions = [
+    { label: '회원가입', description: '기본 조직 계정을 생성합니다.', onClick: join, variant: 'secondary' },
+    { label: '로그인', description: '조직 관리자 로그인 요청을 보냅니다.', onClick: login, variant: 'primary' },
+    { label: '카카오 로그인', description: '카카오 OAuth 로그인으로 이동합니다.', onClick: kakaoLogin, variant: 'kakao' },
+    { label: '네이버 로그인', description: '네이버 OAuth 로그인으로 이동합니다.', onClick: naverLogin, variant: 'secondary' },
+    { label: '로그아웃', description: '현재 로그인 세션을 종료합니다.', onClick: logout, variant: 'ghost' },
+  ];
+
+  const adminLinks = [
+    { label: '문의 관리', description: '미응답 문의를 확인하고 답변합니다.', onClick: () => navigate('/admin/inquiry') },
+    { label: '예약 관리', description: '개인/기관 예약 요청을 검토합니다.', onClick: () => navigate('/admin/reservations') },
+    { label: '게시글 작성', description: '새 공지나 게시글을 등록합니다.', onClick: () => navigate('/admin/create-post') },
+  ];
+
+  return (
+    <section className="home-dashboard">
+      <div className="home-hero-card">
         <div>
-            <h1> DS Helper </h1>
-            <button onClick={join} > 회원가입 </button>
-            <button onClick={login} > 로그인 </button>
-            <button onClick={kakaoLogin} > 카카오로그인 </button>
-            <button onClick={naverLogin} > 네이버로그인 </button>
-            <button onClick={logout} > 로그아웃 </button>
-            <button onClick={InquiryList} > 관리자 문의 관리 페이지 </button>
-            <button onClick={AdminReservations} > 관리자 예약 관리 페이지 </button>
+          <p className="home-kicker">DSHelper Admin</p>
+          <h1 className="home-title">관리자 작업을 한 화면에서 빠르게 처리하세요.</h1>
+          <p className="home-description">
+            로그인, 외부 인증, 문의 확인, 예약 검토, 게시글 등록까지 바로 이동할 수 있도록 홈 화면을 정리했습니다.
+          </p>
         </div>
-    );
+        <div className="home-hero-badge">BLUE</div>
+      </div>
+
+      <div className="home-grid">
+        <section className="home-panel">
+          <div className="home-panel-header">
+            <p className="home-panel-kicker">Quick Actions</p>
+            <h2>계정 및 인증</h2>
+          </div>
+          <div className="home-action-grid">
+            {quickActions.map((action) => (
+              <button
+                key={action.label}
+                type="button"
+                onClick={action.onClick}
+                className={`home-action-card home-action-card-${action.variant}`}
+              >
+                <span className="home-action-label">{action.label}</span>
+                <span className="home-action-description">{action.description}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className="home-panel">
+          <div className="home-panel-header">
+            <p className="home-panel-kicker">Admin Pages</p>
+            <h2>운영 바로가기</h2>
+          </div>
+          <div className="home-link-list">
+            {adminLinks.map((link) => (
+              <button
+                key={link.label}
+                type="button"
+                onClick={link.onClick}
+                className="home-link-card"
+              >
+                <span className="home-link-title">{link.label}</span>
+                <span className="home-link-description">{link.description}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      </div>
+    </section>
+  );
 }
