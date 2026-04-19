@@ -1,23 +1,16 @@
-﻿export const KAKAO_CLIENT_ID = "edda215e7bcfbe5fe5d504c7039fe035";
-export const KAKAO_REDIRECT_PATH = "/oauth/kakao/callback";
+﻿export const KAKAO_CLIENT_ID = "f6e09eeb053caaad27d60a4e451fd9bc";
+export const KAKAO_REDIRECT_URI = "https://admin.dshelper.kr/oauth/kakao/callback";
 export const KAKAO_AUTHORIZE_URL = "https://kauth.kakao.com/oauth/authorize";
-export const KAKAO_TOKEN_EXCHANGE_PATH = "/oauth/kakao/login";
+export const KAKAO_TOKEN_EXCHANGE_URL = "https://server.dshelper.kr/oauth/kakao/logn";
 
-export function getKakaoRedirectUri(location = globalThis.location) {
-  const origin = location?.origin;
-
-  if (!origin) {
-    throw new Error("location.origin is not available.");
-  }
-
-  return `${origin}${KAKAO_REDIRECT_PATH}`;
+export function getKakaoRedirectUri() {
+  return KAKAO_REDIRECT_URI;
 }
 
-export function createKakaoLoginUrl(location = globalThis.location) {
-  const redirectUri = getKakaoRedirectUri(location);
+export function createKakaoLoginUrl() {
   const params = new URLSearchParams({
     client_id: KAKAO_CLIENT_ID,
-    redirect_uri: redirectUri,
+    redirect_uri: KAKAO_REDIRECT_URI,
     response_type: "code",
   });
 

@@ -1,14 +1,12 @@
 ﻿import BaseApi from "../api/BaseApi.jsx";
-import {
-  createKakaoLoginUrl,
-} from "../utils/kakaoAuth.js";
+import { createKakaoLoginUrl } from "../utils/kakaoAuth.js";
 import {
   handleKakaoLoginCallback as handleKakaoLoginCallbackFlow,
   requestKakaoTokens as requestKakaoTokensFlow,
 } from "../utils/kakaoLoginFlow.js";
 
 export function redirectToKakaoLogin(targetLocation = globalThis.location) {
-  const loginUrl = createKakaoLoginUrl(targetLocation);
+  const loginUrl = createKakaoLoginUrl();
   targetLocation.href = loginUrl;
   return loginUrl;
 }
@@ -16,17 +14,15 @@ export function redirectToKakaoLogin(targetLocation = globalThis.location) {
 export async function requestKakaoTokens(
   code,
   apiClient = BaseApi,
-  location = globalThis.location,
   storage = globalThis.localStorage,
 ) {
-  return requestKakaoTokensFlow(apiClient, code, location, storage);
+  return requestKakaoTokensFlow(apiClient, code, storage);
 }
 
 export async function handleKakaoLoginCallback(
   search,
   apiClient = BaseApi,
-  location = globalThis.location,
   storage = globalThis.localStorage,
 ) {
-  return handleKakaoLoginCallbackFlow(search, apiClient, location, storage);
+  return handleKakaoLoginCallbackFlow(search, apiClient, storage);
 }

@@ -15,8 +15,8 @@ import { initializeAuthLifecycle } from "../src/utils/authLifecycle.js";
 import {
   KAKAO_AUTHORIZE_URL,
   KAKAO_CLIENT_ID,
-  KAKAO_REDIRECT_PATH,
-  KAKAO_TOKEN_EXCHANGE_PATH,
+  KAKAO_REDIRECT_URI,
+  KAKAO_TOKEN_EXCHANGE_URL,
   createKakaoLoginUrl,
   extractKakaoCode,
   getKakaoRedirectUri,
@@ -58,14 +58,6 @@ function createWindowMock() {
         handler();
       }
     },
-  };
-}
-
-function createLocationMock(overrides = {}) {
-  return {
-    origin: "http://localhost:5173",
-    href: "http://localhost:5173",
-    ...overrides,
   };
 }
 
@@ -161,24 +153,26 @@ await runTest("clearAuthTokens removes tokens explicitly", async () => {
   assert.equal(storage.getItem(REFRESH_TOKEN_KEY), null);
 });
 
-await runTest("createKakaoLoginUrl builds Kakao authorize URL with redirectUri", async () => {
-  const location = createLocationMock();
-  const loginUrl = createKakaoLoginUrl(location);
+await runTest("createKakaoLoginUrl builds Kakao authorize URL with fixed redirectUri", async () => {
+  const loginUrl = createKakaoLoginUrl();
   const parsedUrl = new URL(loginUrl);
 
   assert.equal(`${parsedUrl.origin}${parsedUrl.pathname}`, KAKAO_AUTHORIZE_URL);
   assert.equal(parsedUrl.searchParams.get("client_id"), KAKAO_CLIENT_ID);
-  assert.equal(parsedUrl.searchParams.get("redirect_uri"), `${location.origin}${KAKAO_REDIRECT_PATH}`);
+  assert.equal(parsedUrl.searchParams.get("redirect_uri"), KAKAO_REDIRECT_URI);
   assert.equal(parsedUrl.searchParams.get("response_type"), "code");
+});
+
+await runTest("getKakaoRedirectUri returns the fixed production callback URL", async () => {
+  assert.equal(getKakaoRedirectUri(), KAKAO_REDIRECT_URI);
 });
 
 await runTest("extractKakaoCode reads authorization code from callback query", async () => {
   assert.equal(extractKakaoCode("?code=test-kakao-code"), "test-kakao-code");
 });
 
-await runTest("requestKakaoTokens sends code and redirectUri to backend and stores tokens", async () => {
+await runTest("requestKakaoTokens sends code and fixed redirectUri to backend and stores tokens", async () => {
   const storage = createStorageMock();
-  const location = createLocationMock();
   const requests = [];
   const apiClient = {
     async post(url, body) {
@@ -192,17 +186,17 @@ await runTest("requestKakaoTokens sends code and redirectUri to backend and stor
     },
   };
 
-  const tokens = await requestKakaoTokens(apiClient, "callback-code", location, storage);
+  const tokens = await requestKakaoTokens(apiClient, "callback-code", storage);
 
   assert.deepEqual(tokens, {
     accessToken: "backend-access-token",
     refreshToken: "backend-refresh-token",
   });
   assert.deepEqual(requests, [{
-    url: KAKAO_TOKEN_EXCHANGE_PATH,
+    url: KAKAO_TOKEN_EXCHANGE_URL,
     body: {
       code: "callback-code",
-      redirectUri: getKakaoRedirectUri(location),
+      redirectUri: KAKAO_REDIRECT_URI,
     },
   }]);
   assert.equal(storage.getItem(ACCESS_TOKEN_KEY), "backend-access-token");
@@ -211,7 +205,6 @@ await runTest("requestKakaoTokens sends code and redirectUri to backend and stor
 
 await runTest("handleKakaoLoginCallback extracts code and exchanges it for tokens", async () => {
   const storage = createStorageMock();
-  const location = createLocationMock();
   const apiClient = {
     async post() {
       return {
@@ -223,7 +216,7 @@ await runTest("handleKakaoLoginCallback extracts code and exchanges it for token
     },
   };
 
-  const tokens = await handleKakaoLoginCallback("?code=callback-code", apiClient, location, storage);
+  const tokens = await handleKakaoLoginCallback("?code=callback-code", apiClient, storage);
 
   assert.deepEqual(tokens, {
     accessToken: "callback-access-token",
