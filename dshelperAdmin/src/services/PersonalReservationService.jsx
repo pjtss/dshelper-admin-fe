@@ -1,13 +1,14 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
-axios.defaults.baseURL = "https://server.dshelper.kr";
+axios.defaults.baseURL = "https://server.dshelper.kr"
 axios.defaults.withCredentials = true;
 
 function AdminReservations() {
   const [personalReservations, setPersonalReservations] = useState([]);
   const [organizationReservations, setOrganizationReservations] = useState([]);
 
+  // 1. 데이터 Fetch
   const fetchReservations = async () => {
     try {
       const res = await axios.get("/admin/reservations/requested-reservations", {
@@ -16,13 +17,13 @@ function AdminReservations() {
           size: 20,
           sort: "desc",
           sortBy: "createdAt",
-        },
+        }
       });
 
       setPersonalReservations(res.data.personalReservations.content);
       setOrganizationReservations(res.data.organizationReservations.content);
     } catch (e) {
-      console.error("Failed to load reservations", e);
+      console.error("예약 데이터 조회 실패", e);
     }
   };
 
@@ -30,140 +31,119 @@ function AdminReservations() {
     fetchReservations();
   }, []);
 
+  // 2. 완료 / 취소 처리
   const handlePersonalReservationStatusChange = async (personalReservationId, status) => {
     try {
       await axios.patch("/admin/personal-reservation/status", {
         personalReservationId,
-        status,
+        status   // "완료" 또는 "취소"
       });
 
-      alert(`Personal reservation status changed to '${status}'.`);
+      alert(`개인 예약의 상태가 '${status}'로 변경되었습니다.`);
       fetchReservations();
     } catch (e) {
-      console.error("Failed to update personal reservation status", e);
-      alert("Status update failed.");
+      console.error("상태 변경 실패", e);
+      alert("상태 변경에 실패했습니다.");
     }
   };
 
+   // 2. 완료 / 취소 처리
   const handleOrganizationReservationStatusChange = async (organizationReservationId, status) => {
     try {
       await axios.patch("/admin/organization-reservation/status", {
         organizationReservationId,
-        status,
+        status   // "완료" 또는 "취소"
       });
 
-      alert(`Organization reservation status changed to '${status}'.`);
+      alert(`기관 예약의 상태가 '${status}'로 변경되었습니다.`);
       fetchReservations();
     } catch (e) {
-      console.error("Failed to update organization reservation status", e);
-      alert("Status update failed.");
+      console.error("상태 변경 실패", e);
+      alert("상태 변경에 실패했습니다.");
     }
   };
 
-  const renderActions = (onApprove, onCancel) => (
-    <div className="table-actions">
-      <button type="button" className="table-action-button primary" onClick={onApprove}>
-        Approve
-      </button>
-      <button type="button" className="table-action-button secondary" onClick={onCancel}>
-        Cancel
-      </button>
-    </div>
-  );
-
   return (
-    <section className="reservation-page">
-      <div className="section-heading reservation-heading">
-        <div>
-          <p className="eyebrow">Reservations</p>
-          <h1 className="section-title">Reservation Management</h1>
-        </div>
-      </div>
+    <div style={{ padding: "20px" }}>
+      <h2>개인 예약 요청</h2>
+      <table border="1" cellPadding="8" style={{ width: "100%", marginBottom: "30px" }}>
+        <thead>
+          <tr>
+            <th>예약자</th>
+            <th>전화번호</th>
+            <th>방문일</th>
+            <th>시간</th>
+            <th>상태</th>
+            <th>도움 요청 내용</th>
+            <th>특이사항</th>
+          </tr>
+        </thead>
+        <tbody>
+          {personalReservations.map((item) => (
+            <tr key={item.personalReservationId}>
+              <td>{item.reservationHolder}</td>
+              <td>{item.reservationPhoneNumber}</td>
+              <td>{item.visitDate}</td>
+              <td>{item.startTime} ~ {item.endTime}</td>
+              <td>{item.reservationStatus}</td>
+              <td>{item.requirement}</td>
+              <td>{item.note}</td>
+              <td>
+                <button onClick={() => handlePersonalReservationStatusChange(item.personalReservationId, "완료")}>
+                  완료
+                </button>
+                <button 
+                  onClick={() => handlePersonalReservationStatusChange(item.personalReservationId, "취소")}
+                  style={{ marginLeft: "8px" }}
+                >
+                  취소
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-      <div className="surface-card table-card">
-        <div className="table-card-header">
-          <h2>Personal Requests</h2>
-          <span>{personalReservations.length} items</span>
-        </div>
-        <div className="table-scroll">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Holder</th>
-                <th>Phone</th>
-                <th>Visit Date</th>
-                <th>Time</th>
-                <th>Status</th>
-                <th>Requirement</th>
-                <th>Note</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {personalReservations.map((item) => (
-                <tr key={item.personalReservationId}>
-                  <td>{item.reservationHolder}</td>
-                  <td>{item.reservationPhoneNumber}</td>
-                  <td>{item.visitDate}</td>
-                  <td>{item.startTime} ~ {item.endTime}</td>
-                  <td><span className="status-pill">{item.reservationStatus}</span></td>
-                  <td>{item.requirement}</td>
-                  <td>{item.note}</td>
-                  <td>
-                    {renderActions(
-                      () => handlePersonalReservationStatusChange(item.personalReservationId, "?꾨즺"),
-                      () => handlePersonalReservationStatusChange(item.personalReservationId, "痍⑥냼"),
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <h2>기관 예약 요청</h2>
+      <table border="1" cellPadding="8" style={{ width: "100%" }}>
+        <thead>
+          <tr>
+            <th>기관명</th>
+            <th>예약자</th>
+            <th>전화번호</th>
+            <th>방문일</th>
+            <th>시간</th>
+            <th>상태</th>
+            <th>도움 요청 내용</th>
+          </tr>
+        </thead>
+        <tbody>
+          {organizationReservations.map((item) => (
+            <tr key={item.organizationReservationId}>
+              <td>{item.organizationName}</td>
+              <td>{item.reservationHolder}</td>
+              <td>{item.reservationPhoneNumber}</td>
+              <td>{item.visitDate}</td>
+              <td>{item.startTime} ~ {item.endTime}</td>
+              <td>{item.reservationStatus}</td>
+              <td>{item.requirement}</td>
+              <td>
+                <button onClick={() => handleOrganizationReservationStatusChange(item.organizationReservationId, "완료")}>
+                  완료
+                </button>
+                <button
+                  onClick={() => handleOrganizationReservationStatusChange(item.organizationReservationId, "취소")}
+                  style={{ marginLeft: "8px" }}
+                >
+                  취소
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-      <div className="surface-card table-card">
-        <div className="table-card-header">
-          <h2>Organization Requests</h2>
-          <span>{organizationReservations.length} items</span>
-        </div>
-        <div className="table-scroll">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Organization</th>
-                <th>Holder</th>
-                <th>Phone</th>
-                <th>Visit Date</th>
-                <th>Time</th>
-                <th>Status</th>
-                <th>Requirement</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {organizationReservations.map((item) => (
-                <tr key={item.organizationReservationId}>
-                  <td>{item.organizationName}</td>
-                  <td>{item.reservationHolder}</td>
-                  <td>{item.reservationPhoneNumber}</td>
-                  <td>{item.visitDate}</td>
-                  <td>{item.startTime} ~ {item.endTime}</td>
-                  <td><span className="status-pill">{item.reservationStatus}</span></td>
-                  <td>{item.requirement}</td>
-                  <td>
-                    {renderActions(
-                      () => handleOrganizationReservationStatusChange(item.organizationReservationId, "?꾨즺"),
-                      () => handleOrganizationReservationStatusChange(item.organizationReservationId, "痍⑥냼"),
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+    </div>
   );
 }
 
