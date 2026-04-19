@@ -1,41 +1,30 @@
-// src/layout/AdminSidebar.jsx
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
+
+const navigationItems = [
+  { to: "/", label: "?룧 ?붾㈃" },
+  { to: "/admin/inquiry", label: "?벃 臾몄쓽 愿由?" },
+  { to: "/admin/reservations", label: "?뱟 ?덉빟 愿由?" },
+  { to: "/admin/create-post", label: "?뱷 ?꾩??쒕┛ ?댁빞湲?" },
+];
 
 export default function AdminSidebar() {
   return (
-    <aside
-      style={{
-        width: "240px",
-        minHeight: "100vh",
-        background: "#2563eb",
-        padding: "20px",
-        color: "white",
-        display: "flex",
-        flexDirection: "column",
-        gap: "18px",
-        fontWeight: 600,
+    <aside className="admin-sidebar">
+      <div className="sidebar-brand">
+        <span className="sidebar-badge">DS</span>
+        <div>
+          <p className="sidebar-eyebrow">Workspace</p>
+          <h2>DSHelper Admin</h2>
+        </div>
+      </div>
 
-        // 반응형: 모바일에서는 상단바로 변경
-        position: "sticky",
-        top: 0,
-      }}
-    >
-      <h2 style={{ fontSize: "20px", marginBottom: "10px" }}>💚 DSHelper Admin</h2>
-
-      <Link style={linkStyle} to="/">🏠 홈 화면</Link>
-      <Link style={linkStyle} to="/admin/inquiry">📩 문의 관리</Link>
-      <Link style={linkStyle} to="/admin/reservations">📅 예약 관리</Link>
-      <Link style={linkStyle} to="/admin/create-post">📝 도와드린 이야기</Link>
+      <nav className="sidebar-nav">
+        {navigationItems.map((item) => (
+          <Link key={item.to} className="sidebar-link" to={item.to}>
+            {item.label}
+          </Link>
+        ))}
+      </nav>
     </aside>
   );
 }
-
-const linkStyle = {
-  color: "white", 
-  textDecoration: "none",
-  padding: "10px 12px",
-  borderRadius: "8px",
-  background: "rgba(255,255,255,0.14)",
-  transition: "0.2s",
-  display: "block",
-};
