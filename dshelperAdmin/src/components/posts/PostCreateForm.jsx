@@ -15,13 +15,13 @@ export default function PostCreateForm() {
 
     try {
       await createPost(dto, images);
-      alert("寃뚯떆湲???깃났?곸쑝濡??깅줉?섏뿀?듬땲?? ?뮍");
+      alert("게시글이 성공적으로 등록되었습니다.");
       setTitle("");
       setContent("");
       setImages([]);
     } catch (err) {
       console.error(err);
-      alert("寃뚯떆湲 ?깅줉 ?ㅽ뙣 ?삟");
+      alert("게시글 등록에 실패했습니다.");
     }
   };
 
@@ -45,26 +45,26 @@ export default function PostCreateForm() {
           color: "#1d4ed8",
         }}
       >
-        ?륅툘 寃뚯떆湲 ?묒꽦?섍린
+        게시글 작성하기
       </h2>
 
       <TextInput
-        label="?쒕ぉ"
+        label="제목"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="寃뚯떆湲 ?쒕ぉ???낅젰?섏꽭??"
+        placeholder="게시글 제목을 입력하세요"
       />
 
       <TextArea
-        label="?댁슜"
+        label="내용"
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        placeholder="?댁슜???낅젰?섏꽭??"
+        placeholder="내용을 입력하세요"
       />
 
       <div style={{ marginBottom: 20, width: "100%", boxSizing: "border-box" }}>
         <label style={{ fontWeight: 600, display: "block", marginBottom: 6 }}>
-          ?대?吏 ?낅줈??
+          이미지 업로드
         </label>
         <input
           type="file"
@@ -75,7 +75,7 @@ export default function PostCreateForm() {
       </div>
 
       <Button onClick={handleSubmit} disabled={!title || !content}>
-        寃뚯떆湲 ?깅줉
+        게시글 등록
       </Button>
     </div>
   );
