@@ -1,7 +1,7 @@
-﻿export const KAKAO_CLIENT_ID = "test-kakao-client-id";
-export const KAKAO_REDIRECT_PATH = "/auth/kakao/callback";
+﻿export const KAKAO_CLIENT_ID = "edda215e7bcfbe5fe5d504c7039fe035";
+export const KAKAO_REDIRECT_PATH = "/oauth/kakao/callback";
 export const KAKAO_AUTHORIZE_URL = "https://kauth.kakao.com/oauth/authorize";
-export const KAKAO_TOKEN_EXCHANGE_PATH = "/oauth/kakao/exchange";
+export const KAKAO_TOKEN_EXCHANGE_PATH = "/oauth/kakao/login";
 
 export function getKakaoRedirectUri(location = globalThis.location) {
   const origin = location?.origin;

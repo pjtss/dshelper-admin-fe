@@ -14,7 +14,9 @@ import {
 import { initializeAuthLifecycle } from "../src/utils/authLifecycle.js";
 import {
   KAKAO_AUTHORIZE_URL,
+  KAKAO_CLIENT_ID,
   KAKAO_REDIRECT_PATH,
+  KAKAO_TOKEN_EXCHANGE_PATH,
   createKakaoLoginUrl,
   extractKakaoCode,
   getKakaoRedirectUri,
@@ -165,6 +167,7 @@ await runTest("createKakaoLoginUrl builds Kakao authorize URL with redirectUri",
   const parsedUrl = new URL(loginUrl);
 
   assert.equal(`${parsedUrl.origin}${parsedUrl.pathname}`, KAKAO_AUTHORIZE_URL);
+  assert.equal(parsedUrl.searchParams.get("client_id"), KAKAO_CLIENT_ID);
   assert.equal(parsedUrl.searchParams.get("redirect_uri"), `${location.origin}${KAKAO_REDIRECT_PATH}`);
   assert.equal(parsedUrl.searchParams.get("response_type"), "code");
 });
@@ -196,7 +199,7 @@ await runTest("requestKakaoTokens sends code and redirectUri to backend and stor
     refreshToken: "backend-refresh-token",
   });
   assert.deepEqual(requests, [{
-    url: "/oauth/kakao/exchange",
+    url: KAKAO_TOKEN_EXCHANGE_PATH,
     body: {
       code: "callback-code",
       redirectUri: getKakaoRedirectUri(location),
