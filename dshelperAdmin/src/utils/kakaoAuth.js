@@ -1,4 +1,4 @@
-﻿export const KAKAO_CLIENT_ID = "edda215e7bcfbe5fe5d504c7039fe035";
+﻿export const KAKAO_CLIENT_ID = "f6e09eeb053caaad27d60a4e451fd9bc";
 export const KAKAO_REDIRECT_PATH = "/oauth/kakao/callback";
 export const KAKAO_AUTHORIZE_URL = "https://kauth.kakao.com/oauth/authorize";
 export const KAKAO_TOKEN_EXCHANGE_PATH = "/oauth/kakao/login";
