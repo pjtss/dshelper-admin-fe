@@ -1,4 +1,4 @@
-// src/pages/PostCreatePage.jsx
+﻿// src/pages/PostCreatePage.jsx
 import PostCreateForm from "@/components/posts/PostCreateForm";
 
 export default function PostCreatePage() {
@@ -10,9 +10,11 @@ export default function PostCreatePage() {
         padding: "40px 20px",
         display: "flex",
         justifyContent: "center",
+        alignItems: "flex-start",
+        boxSizing: "border-box",
       }}
     >
-      <div style={{ width: "100%", maxWidth: 650 }}>
+      <div style={{ width: "100%", maxWidth: 650, boxSizing: "border-box" }}>
         <PostCreateForm />
       </div>
     </div>

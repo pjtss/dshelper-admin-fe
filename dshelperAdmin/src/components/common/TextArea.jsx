@@ -1,7 +1,7 @@
-// src/components/common/TextArea.jsx
+﻿// src/components/common/TextArea.jsx
 export default function TextArea({ label, value, onChange, placeholder }) {
   return (
-    <div style={{ marginBottom: 16 }}>
+    <div style={{ marginBottom: 16, width: "100%", boxSizing: "border-box" }}>
       <label style={{ fontWeight: 600, display: "block", marginBottom: 6 }}>
         {label}
       </label>
@@ -18,6 +18,7 @@ export default function TextArea({ label, value, onChange, placeholder }) {
           border: "1px solid #bfdbfe",
           background: "#fff",
           resize: "none",
+          boxSizing: "border-box",
         }}
       />
     </div>
