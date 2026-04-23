@@ -13,8 +13,8 @@ import {
 } from "../src/utils/authResponse.js";
 import { initializeAuthLifecycle } from "../src/utils/authLifecycle.js";
 import {
+  KAKAO_AUTHORIZE_URL,
   KAKAO_CLIENT_ID,
-  KAKAO_LOGIN_URL,
   KAKAO_REDIRECT_URI,
   KAKAO_TOKEN_EXCHANGE_URL,
   createKakaoLoginUrl,
@@ -153,9 +153,14 @@ await runTest("clearAuthTokens removes tokens explicitly", async () => {
   assert.equal(storage.getItem(REFRESH_TOKEN_KEY), null);
 });
 
-await runTest("createKakaoLoginUrl returns the backend Kakao login URL", async () => {
-  assert.equal(createKakaoLoginUrl(), KAKAO_LOGIN_URL);
-  assert.equal(KAKAO_CLIENT_ID, "f6e09eeb053caaad27d60a4e451fd9bc");
+await runTest("createKakaoLoginUrl builds the Kakao authorize URL in the frontend", async () => {
+  const loginUrl = createKakaoLoginUrl();
+  const parsedUrl = new URL(loginUrl);
+
+  assert.equal(`${parsedUrl.origin}${parsedUrl.pathname}`, KAKAO_AUTHORIZE_URL);
+  assert.equal(parsedUrl.searchParams.get("client_id"), KAKAO_CLIENT_ID);
+  assert.equal(parsedUrl.searchParams.get("redirect_uri"), KAKAO_REDIRECT_URI);
+  assert.equal(parsedUrl.searchParams.get("response_type"), "code");
 });
 
 await runTest("getKakaoRedirectUri returns the fixed production callback URL", async () => {
@@ -166,7 +171,7 @@ await runTest("extractKakaoCode reads authorization code from callback query", a
   assert.equal(extractKakaoCode("?code=test-kakao-code"), "test-kakao-code");
 });
 
-await runTest("requestKakaoTokens sends code and fixed redirectUri to backend and stores tokens", async () => {
+await runTest("requestKakaoTokens sends only code to backend and stores tokens", async () => {
   const storage = createStorageMock();
   const requests = [];
   const apiClient = {
@@ -191,7 +196,6 @@ await runTest("requestKakaoTokens sends code and fixed redirectUri to backend an
     url: KAKAO_TOKEN_EXCHANGE_URL,
     body: {
       code: "callback-code",
-      redirectUri: KAKAO_REDIRECT_URI,
     },
   }]);
   assert.equal(storage.getItem(ACCESS_TOKEN_KEY), "backend-access-token");

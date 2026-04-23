@@ -2,13 +2,11 @@
 import {
   KAKAO_TOKEN_EXCHANGE_URL,
   extractKakaoCode,
-  getKakaoRedirectUri,
 } from "./kakaoAuth.js";
 
 export async function requestKakaoTokens(apiClient, code, storage = globalThis.localStorage) {
   const response = await apiClient.post(KAKAO_TOKEN_EXCHANGE_URL, {
     code,
-    redirectUri: getKakaoRedirectUri(),
   });
 
   return persistAuthTokensFromResponse(response.data, storage);

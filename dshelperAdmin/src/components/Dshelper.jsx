@@ -1,8 +1,12 @@
-﻿import { join, login, kakaoLogin, naverLogin, logout } from '@/services/UserService.jsx';
+﻿import { useState } from 'react';
+import { join, login, kakaoLogin, naverLogin, logout } from '@/services/UserService.jsx';
+import { ACCESS_TOKEN_KEY, getAccessToken, getTokenStorage } from '@/utils/tokenStorage.js';
 import { useNavigate } from 'react-router-dom';
 
 export default function Dshelper() {
   const navigate = useNavigate();
+  const storage = getTokenStorage();
+  const [accessTokenInput, setAccessTokenInput] = useState(getAccessToken(storage) ?? '');
 
   const quickActions = [
     { label: '회원가입', description: '기본 조직 계정을 생성합니다.', onClick: join, variant: 'secondary' },
@@ -18,6 +22,11 @@ export default function Dshelper() {
     { label: '게시글 작성', description: '새 공지나 게시글을 등록합니다.', onClick: () => navigate('/admin/create-post') },
   ];
 
+  const saveAccessToken = () => {
+    storage.setItem(ACCESS_TOKEN_KEY, accessTokenInput.trim());
+    alert('accessToken을 localStorage에 저장했습니다.');
+  };
+
   return (
     <section className="home-dashboard">
       <div className="home-hero-card">
@@ -30,6 +39,27 @@ export default function Dshelper() {
         </div>
         <div className="home-hero-badge">BLUE</div>
       </div>
+
+      <section className="home-token-panel">
+        <div className="home-panel-header home-token-header">
+          <div>
+            <p className="home-panel-kicker home-panel-kicker-light">Access Token</p>
+            <h2>액세스 토큰 직접 저장</h2>
+          </div>
+        </div>
+        <div className="home-token-row">
+          <input
+            type="text"
+            value={accessTokenInput}
+            onChange={(event) => setAccessTokenInput(event.target.value)}
+            placeholder="accessToken을 입력하세요"
+            className="home-token-input"
+          />
+          <button type="button" onClick={saveAccessToken} className="home-token-button">
+            저장
+          </button>
+        </div>
+      </section>
 
       <div className="home-grid">
         <section className="home-panel">
