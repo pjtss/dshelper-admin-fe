@@ -95,7 +95,7 @@ await runTest("applyAuthorizationHeader sets Authorization header from localStor
 
   assert.deepEqual(config.headers, {
     "Content-Type": "application/json",
-    Authorization: "header-token",
+    Authorization: "Bearer header-token",
   });
 });
 

@@ -11,7 +11,7 @@ export function applyAuthorizationHeader(config, storage = globalThis.localStora
     ...config,
     headers: {
       ...(config?.headers ?? {}),
-      Authorization: accessToken,
+      Authorization: `Bearer ${accessToken}`,
     },
   };
 }
