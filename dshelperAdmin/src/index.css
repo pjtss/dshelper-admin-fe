@@ -207,17 +207,9 @@ textarea {
 .home-action-label,
 .home-link-title {
   display: block;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 800;
-}
-
-.home-action-description,
-.home-link-description {
-  display: block;
-  margin-top: 10px;
-  font-size: 14px;
-  line-height: 1.6;
-  opacity: 0.85;
+  text-align: center;
 }
 
 .home-link-list {
@@ -267,3 +259,4 @@ textarea {
     gap: 10px;
   }
 }
+
