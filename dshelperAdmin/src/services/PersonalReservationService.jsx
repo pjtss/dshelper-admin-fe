@@ -1,23 +1,19 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-
-axios.defaults.baseURL = "https://server.dshelper.kr"
-axios.defaults.withCredentials = true;
+﻿import { useEffect, useState } from "react";
+import BaseApi from "@/api/BaseApi.jsx";
 
 function AdminReservations() {
   const [personalReservations, setPersonalReservations] = useState([]);
   const [organizationReservations, setOrganizationReservations] = useState([]);
 
-  // 1. 데이터 Fetch
   const fetchReservations = async () => {
     try {
-      const res = await axios.get("/admin/reservations/requested-reservations", {
+      const res = await BaseApi.get("/admin/reservations/requested-reservations", {
         params: {
           page: 0,
           size: 20,
           sort: "desc",
           sortBy: "createdAt",
-        }
+        },
       });
 
       setPersonalReservations(res.data.personalReservations.content);
@@ -31,15 +27,14 @@ function AdminReservations() {
     fetchReservations();
   }, []);
 
-  // 2. 완료 / 취소 처리
   const handlePersonalReservationStatusChange = async (personalReservationId, status) => {
     try {
-      await axios.patch("/admin/personal-reservation/status", {
+      await BaseApi.patch("/admin/personal-reservation/status", {
         personalReservationId,
-        status   // "완료" 또는 "취소"
+        status,
       });
 
-      alert(`개인 예약의 상태가 '${status}'로 변경되었습니다.`);
+      alert(`개인 예약 상태가 '${status}'로 변경되었습니다.`);
       fetchReservations();
     } catch (e) {
       console.error("상태 변경 실패", e);
@@ -47,15 +42,14 @@ function AdminReservations() {
     }
   };
 
-   // 2. 완료 / 취소 처리
   const handleOrganizationReservationStatusChange = async (organizationReservationId, status) => {
     try {
-      await axios.patch("/admin/organization-reservation/status", {
+      await BaseApi.patch("/admin/organization-reservation/status", {
         organizationReservationId,
-        status   // "완료" 또는 "취소"
+        status,
       });
 
-      alert(`기관 예약의 상태가 '${status}'로 변경되었습니다.`);
+      alert(`기관 예약 상태가 '${status}'로 변경되었습니다.`);
       fetchReservations();
     } catch (e) {
       console.error("상태 변경 실패", e);
@@ -74,7 +68,7 @@ function AdminReservations() {
             <th>방문일</th>
             <th>시간</th>
             <th>상태</th>
-            <th>도움 요청 내용</th>
+            <th>요청 내용</th>
             <th>특이사항</th>
           </tr>
         </thead>
@@ -92,7 +86,7 @@ function AdminReservations() {
                 <button onClick={() => handlePersonalReservationStatusChange(item.personalReservationId, "완료")}>
                   완료
                 </button>
-                <button 
+                <button
                   onClick={() => handlePersonalReservationStatusChange(item.personalReservationId, "취소")}
                   style={{ marginLeft: "8px" }}
                 >
@@ -114,7 +108,7 @@ function AdminReservations() {
             <th>방문일</th>
             <th>시간</th>
             <th>상태</th>
-            <th>도움 요청 내용</th>
+            <th>요청 내용</th>
           </tr>
         </thead>
         <tbody>
@@ -142,7 +136,6 @@ function AdminReservations() {
           ))}
         </tbody>
       </table>
-
     </div>
   );
 }

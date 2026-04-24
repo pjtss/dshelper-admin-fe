@@ -1,4 +1,5 @@
 ﻿import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 
 import {
   ACCESS_TOKEN_KEY,
@@ -221,4 +222,28 @@ await runTest("handleKakaoLoginCallback extracts code and exchanges it for token
     accessToken: "callback-access-token",
     refreshToken: "callback-refresh-token",
   });
+});
+
+await runTest("admin reservation page uses BaseApi instead of raw axios", async () => {
+  const source = readFileSync(new URL("../src/services/PersonalReservationService.jsx", import.meta.url), "utf8");
+
+  assert.match(source, /import BaseApi from "@\/api\/BaseApi\.jsx"/);
+  assert.doesNotMatch(source, /import axios from "axios"/);
+  assert.doesNotMatch(source, /axios\.(get|post|patch|put|delete)\(/);
+  assert.match(source, /BaseApi\.(get|patch)\(/);
+});
+
+await runTest("inquiry pages use BaseApi instead of raw axios", async () => {
+  const listSource = readFileSync(new URL("../src/components/admin/InquiryList.jsx", import.meta.url), "utf8");
+  const itemSource = readFileSync(new URL("../src/components/admin/InquiryItem.jsx", import.meta.url), "utf8");
+
+  assert.match(listSource, /import BaseApi from "@\/api\/BaseApi\.jsx"/);
+  assert.doesNotMatch(listSource, /import axios from "axios"/);
+  assert.doesNotMatch(listSource, /axios\.(get|post|patch|put|delete)\(/);
+  assert.match(listSource, /BaseApi\.get\(/);
+
+  assert.match(itemSource, /import BaseApi from "@\/api\/BaseApi\.jsx"/);
+  assert.doesNotMatch(itemSource, /import axios from "axios"/);
+  assert.doesNotMatch(itemSource, /axios\.(get|post|patch|put|delete)\(/);
+  assert.match(itemSource, /BaseApi\.(post|patch)\(/);
 });
