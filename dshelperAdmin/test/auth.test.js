@@ -1,5 +1,5 @@
 ﻿import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 
 import {
   ACCESS_TOKEN_KEY,
@@ -246,4 +246,39 @@ await runTest("inquiry pages use BaseApi instead of raw axios", async () => {
   assert.doesNotMatch(itemSource, /import axios from "axios"/);
   assert.doesNotMatch(itemSource, /axios\.(get|post|patch|put|delete)\(/);
   assert.match(itemSource, /BaseApi\.(post|patch)\(/);
+});
+
+await runTest("main entry imports bootstrap and project styles", async () => {
+  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+
+  assert.match(source, /bootstrap\/dist\/css\/bootstrap\.min\.css/);
+  assert.match(source, /\.\/index\.css/);
+});
+
+await runTest("Pages.md documents every current route", async () => {
+  const pagesPath = new URL("../Pages.md", import.meta.url);
+  assert.equal(existsSync(pagesPath), true);
+
+  const source = readFileSync(pagesPath, "utf8");
+  assert.match(source, /`\/`/);
+  assert.match(source, /`\/oauth\/kakao\/callback`/);
+  assert.match(source, /`\/admin\/inquiry`/);
+  assert.match(source, /`\/admin\/reservations`/);
+  assert.match(source, /`\/admin\/create-post`/);
+});
+
+await runTest("Bootstrap-based classes are applied to home, inquiry, reservation, and post pages", async () => {
+  const homeSource = readFileSync(new URL("../src/components/Dshelper.jsx", import.meta.url), "utf8");
+  const inquirySource = readFileSync(new URL("../src/components/admin/InquiryItem.jsx", import.meta.url), "utf8");
+  const reservationSource = readFileSync(new URL("../src/services/PersonalReservationService.jsx", import.meta.url), "utf8");
+  const postSource = readFileSync(new URL("../src/components/posts/PostCreateForm.jsx", import.meta.url), "utf8");
+  const buttonSource = readFileSync(new URL("../src/components/common/Button.jsx", import.meta.url), "utf8");
+
+  assert.match(homeSource, /btn btn-light btn-lg/);
+  assert.match(homeSource, /btn btn-outline-primary btn-lg/);
+  assert.match(inquirySource, /form-control/);
+  assert.match(inquirySource, /btn btn-primary/);
+  assert.match(reservationSource, /table table-hover align-middle/);
+  assert.match(postSource, /form-control form-control-lg/);
+  assert.match(buttonSource, /btn btn-primary btn-lg/);
 });

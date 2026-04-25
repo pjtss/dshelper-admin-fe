@@ -39,19 +39,12 @@ export default function KakaoCallbackPage() {
   }, [location.search, navigate]);
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#ffffff",
-        color: "#1d4ed8",
-        fontSize: "20px",
-        fontWeight: 700,
-      }}
-    >
-      {status}
+    <div className="callback-screen d-flex align-items-center justify-content-center px-3">
+      <div className="page-card text-center p-5" style={{ maxWidth: "420px", width: "100%" }}>
+        <div className="spinner-border text-primary mb-4" role="status" />
+        <h2 className="h4 fw-bold mb-2">카카오 로그인</h2>
+        <p className="text-secondary mb-0">{status}</p>
+      </div>
     </div>
   );
 }

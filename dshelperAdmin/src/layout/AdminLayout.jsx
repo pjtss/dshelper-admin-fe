@@ -1,27 +1,13 @@
-// src/layout/AdminLayout.jsx
-import AdminSidebar from "@/layout/AdminSidebar.jsx";
+﻿import AdminSidebar from "@/layout/AdminSidebar.jsx";
 
 export default function AdminLayout({ children }) {
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#ffffff",
-        display: "flex",
-        flexDirection: "row",
-      }}
-    >
+    <div className="app-shell d-lg-flex">
       <AdminSidebar />
-
-      <main
-        style={{
-          flex: 1,
-          padding: "24px",
-          maxWidth: "1200px",
-          margin: "0 auto",
-        }}
-      >
-        {children}
+      <main className="app-main">
+        <div className="container-fluid px-3 px-lg-4 py-4 py-lg-5">
+          {children}
+        </div>
       </main>
     </div>
   );

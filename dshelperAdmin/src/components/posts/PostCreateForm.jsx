@@ -1,5 +1,4 @@
-﻿// src/components/posts/PostCreateForm.jsx
-import { useState } from "react";
+﻿import { useState } from "react";
 import TextInput from "../common/TextInput";
 import TextArea from "../common/TextArea";
 import Button from "../common/Button";
@@ -26,27 +25,12 @@ export default function PostCreateForm() {
   };
 
   return (
-    <div
-      style={{
-        width: "100%",
-        background: "#fff",
-        padding: 24,
-        borderRadius: 14,
-        border: "1px solid #dbeafe",
-        boxShadow: "0 12px 32px rgba(37, 99, 235, 0.08)",
-        boxSizing: "border-box",
-      }}
-    >
-      <h2
-        style={{
-          fontSize: 22,
-          marginBottom: 20,
-          fontWeight: 700,
-          color: "#1d4ed8",
-        }}
-      >
-        게시글 작성하기
-      </h2>
+    <div className="page-card p-4 p-lg-5">
+      <div className="mb-4">
+        <div className="text-uppercase small fw-bold text-primary mb-2">Post</div>
+        <h2 className="page-section-title mb-1">게시글 작성</h2>
+        <p className="page-section-subtitle mb-0">제목, 본문, 이미지를 입력한 뒤 게시글을 등록합니다.</p>
+      </div>
 
       <TextInput
         label="제목"
@@ -62,15 +46,14 @@ export default function PostCreateForm() {
         placeholder="내용을 입력하세요"
       />
 
-      <div style={{ marginBottom: 20, width: "100%", boxSizing: "border-box" }}>
-        <label style={{ fontWeight: 600, display: "block", marginBottom: 6 }}>
-          이미지 업로드
-        </label>
+      <div className="mb-4">
+        <label className="form-label fw-semibold">이미지 업로드</label>
         <input
           type="file"
           accept="image/*"
           onChange={(e) => setImages(Array.from(e.target.files))}
-          style={{ width: "100%", boxSizing: "border-box" }}
+          className="form-control form-control-lg rounded-4"
+          multiple
         />
       </div>
 

@@ -34,27 +34,35 @@ function InquiryItem({ inquiry, onCancel, onReply }) {
   };
 
   return (
-    <div style={{ border: "1px solid #ccc", margin: "10px 0", padding: "10px" }}>
-      <h3
-        style={{ cursor: "pointer", color: open ? "#007bff" : "black" }}
-        onClick={() => setOpen(!open)}
-      >
-        {inquiry.type} - {inquiry.user.name}
-      </h3>
-
-      <p>{inquiry.content}</p>
-      <p><small>작성일 {inquiry.createdAt}</small></p>
+    <div className="page-card p-4">
+      <div className="d-flex flex-column flex-lg-row justify-content-between align-items-start gap-3">
+        <div>
+          <div className="d-flex flex-wrap align-items-center gap-2 mb-2">
+            <span className="badge rounded-pill text-bg-primary">{inquiry.type}</span>
+            <span className="fw-bold">{inquiry.user.name}</span>
+          </div>
+          <p className="mb-2 text-secondary">{inquiry.content}</p>
+          <div className="small text-secondary">작성일 {inquiry.createdAt}</div>
+        </div>
+        <button
+          type="button"
+          className={`btn ${open ? "btn-primary" : "btn-outline-primary"} rounded-pill px-4`}
+          onClick={() => setOpen(!open)}
+        >
+          {open ? "닫기" : "답변"}
+        </button>
+      </div>
 
       {inquiry.imageUrls.length > 0 && (
-        <div style={{ marginTop: "10px" }}>
-          <b>이미지:</b>
-          <div style={{ display: "flex", gap: "10px", marginTop: "6px" }}>
+        <div className="mt-4">
+          <div className="fw-semibold mb-2">첨부 이미지</div>
+          <div className="d-flex flex-wrap gap-3">
             {inquiry.imageUrls.map((url, idx) => (
               <img
                 key={idx}
                 src={url}
-                alt="inquiry"
-                style={{ width: "120px", height: "120px", objectFit: "cover", borderRadius: "6px" }}
+                alt="문의 첨부 이미지"
+                className="inquiry-image"
               />
             ))}
           </div>
@@ -62,19 +70,23 @@ function InquiryItem({ inquiry, onCancel, onReply }) {
       )}
 
       {open && (
-        <div style={{ marginTop: "10px" }}>
+        <div className="mt-4 border-top pt-4">
+          <label className="form-label fw-semibold">답변 내용</label>
           <textarea
             value={replyContent}
             onChange={(e) => setReplyContent(e.target.value)}
             placeholder="답변 내용을 입력하세요"
-            rows="3"
-            style={{ width: "100%", resize: "none" }}
+            rows="4"
+            className="form-control rounded-4"
+            style={{ resize: "none" }}
           />
 
-          <div style={{ marginTop: "5px" }}>
-            <button onClick={submitReply}>답변하기</button>
-            <button onClick={cancelInquiry} style={{ marginLeft: "10px" }}>
-              취소
+          <div className="d-flex flex-wrap gap-2 mt-3">
+            <button type="button" onClick={submitReply} className="btn btn-primary rounded-pill px-4">
+              답변 등록
+            </button>
+            <button type="button" onClick={cancelInquiry} className="btn btn-outline-danger rounded-pill px-4">
+              문의 취소
             </button>
           </div>
         </div>
