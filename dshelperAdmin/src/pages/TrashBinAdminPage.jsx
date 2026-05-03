@@ -83,28 +83,15 @@ export default function TrashBinAdminPage() {
 
   return (
     <section className="d-flex flex-column gap-4">
-      <div className="page-card p-4">
-        <div className="text-uppercase small fw-bold text-primary mb-2">TrashBin Admin</div>
-        <h2 className="page-section-title mb-1">쓰레기통 업로드 관리</h2>
-        <p className="page-section-subtitle mb-0">
-          Spring Boot `TrashBinController` 계약에 맞춰 CSV 업로드, 이미지 업로드, 저장 목록 조회를 수행합니다.
-        </p>
-      </div>
-
       <div className="row g-4">
         <div className="col-12 col-xl-6">
           <div className="page-card h-100 p-4">
             <div className="d-flex justify-content-between align-items-start gap-3 mb-4">
               <div>
                 <div className="text-uppercase small fw-bold text-primary mb-2">CSV Upload</div>
-                <h3 className="h5 fw-bold mb-1">CSV 데이터 업로드</h3>
-                <p className="text-secondary mb-0">`POST /trash-bins/upload`에 `file` 파트로 CSV 파일을 업로드합니다.</p>
+                <h3 className="h5 fw-bold mb-0">CSV 업로드</h3>
               </div>
               <span className="badge text-bg-primary rounded-pill">ADMIN</span>
-            </div>
-
-            <div className="alert alert-primary border-0 rounded-4" role="alert">
-              UTF-8 CSV 파일만 업로드하고, 업로드 시 기존 TrashBin 데이터는 전체 교체됩니다.
             </div>
 
             <div className="mb-3">
@@ -124,13 +111,13 @@ export default function TrashBinAdminPage() {
                 onClick={handleCsvUpload}
                 disabled={!csvFile || csvUploading}
               >
-                {csvUploading ? "업로드 중..." : "CSV 업로드"}
+                {csvUploading ? "업로드 중..." : "업로드"}
               </button>
             </div>
 
             {csvResult ? (
               <div className="mt-4 rounded-4 border bg-light p-3">
-                <div className="fw-bold mb-2">업로드 결과</div>
+                <div className="fw-bold mb-2">결과</div>
                 <div className="text-secondary">저장 건수: {csvResult.savedCount ?? 0}</div>
               </div>
             ) : null}
@@ -142,14 +129,9 @@ export default function TrashBinAdminPage() {
             <div className="d-flex justify-content-between align-items-start gap-3 mb-4">
               <div>
                 <div className="text-uppercase small fw-bold text-primary mb-2">Image Upload</div>
-                <h3 className="h5 fw-bold mb-1">대표 이미지 업로드</h3>
-                <p className="text-secondary mb-0">`POST /trash-bins/images`에 `image` 파트로 이미지를 업로드합니다.</p>
+                <h3 className="h5 fw-bold mb-0">이미지 업로드</h3>
               </div>
               <span className="badge text-bg-primary rounded-pill">ADMIN</span>
-            </div>
-
-            <div className="alert alert-info border-0 rounded-4" role="alert">
-              파일명은 반드시 위도여야 합니다. 예: `35.808057.png`, `35.808057.webp`
             </div>
 
             <div className="mb-3">
@@ -169,13 +151,13 @@ export default function TrashBinAdminPage() {
                 onClick={handleImageUpload}
                 disabled={!imageFile || imageUploading}
               >
-                {imageUploading ? "업로드 중..." : "이미지 업로드"}
+                {imageUploading ? "업로드 중..." : "업로드"}
               </button>
             </div>
 
             {imageResult ? (
               <div className="mt-4 rounded-4 border bg-light p-3">
-                <div className="fw-bold mb-2">업로드 결과</div>
+                <div className="fw-bold mb-2">결과</div>
                 <div className="small text-secondary mb-1">메시지: {imageResult.message}</div>
                 <div className="small text-secondary mb-1">쓰레기통 ID: {imageResult.trashBinId}</div>
                 <div className="small text-secondary mb-1">위도/경도: {imageResult.latitude} / {imageResult.longitude}</div>
@@ -189,11 +171,7 @@ export default function TrashBinAdminPage() {
 
       <div className="page-card table-card overflow-hidden">
         <div className="p-4 border-bottom d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
-          <div>
-            <div className="text-uppercase small fw-bold text-primary mb-2">TrashBin List</div>
-            <h3 className="h5 fw-bold mb-1">저장된 쓰레기통 목록</h3>
-            <p className="text-secondary mb-0">업로드 결과를 즉시 확인할 수 있도록 목록을 함께 제공합니다.</p>
-          </div>
+          <h3 className="h5 fw-bold mb-0">쓰레기통 목록</h3>
           <button type="button" className="btn btn-outline-primary rounded-pill px-4" onClick={() => loadTrashBins(page)}>
             새로고침
           </button>
@@ -202,7 +180,7 @@ export default function TrashBinAdminPage() {
         {loading ? (
           <div className="p-5 text-center">
             <div className="spinner-border text-primary mb-3" role="status" />
-            <div className="text-secondary">쓰레기통 목록을 불러오는 중입니다.</div>
+            <div className="text-secondary">불러오는 중...</div>
           </div>
         ) : (
           <>
@@ -222,7 +200,7 @@ export default function TrashBinAdminPage() {
                 <tbody>
                   {trashBins.length === 0 ? (
                     <tr>
-                      <td colSpan="7" className="text-center py-5 text-secondary">저장된 쓰레기통 데이터가 없습니다.</td>
+                      <td colSpan="7" className="text-center py-5 text-secondary">데이터가 없습니다.</td>
                     </tr>
                   ) : (
                     trashBins.map((item) => (
@@ -282,4 +260,3 @@ export default function TrashBinAdminPage() {
     </section>
   );
 }
-

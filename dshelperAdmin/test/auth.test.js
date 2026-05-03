@@ -309,10 +309,12 @@ await runTest("trash bin admin route and navigation are wired into the frontend"
   assert.match(appSource, /path="\/admin\/trash-bins"/);
   assert.match(homeSource, /navigate\("\/admin\/trash-bins"\)/);
   assert.match(sidebarSource, /"\/admin\/trash-bins"/);
-  assert.match(pageSource, /POST \/trash-bins\/upload/);
-  assert.match(pageSource, /POST \/trash-bins\/images/);
+  assert.match(pageSource, /CSV 업로드/);
+  assert.match(pageSource, /이미지 업로드/);
   assert.match(pageSource, /쓰레기통 목록/);
 });
+
+
 
 
 
