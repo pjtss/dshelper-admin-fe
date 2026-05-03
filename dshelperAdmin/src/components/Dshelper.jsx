@@ -20,6 +20,7 @@ export default function Dshelper() {
     { label: "문의", onClick: () => navigate("/admin/inquiry"), description: "응답이 필요한 문의를 확인합니다." },
     { label: "예약", onClick: () => navigate("/admin/reservations"), description: "개인/기관 예약 상태를 변경합니다." },
     { label: "게시글", onClick: () => navigate("/admin/create-post"), description: "공지나 게시글을 등록합니다." },
+    { label: "쓰레기통", onClick: () => navigate("/admin/trash-bins"), description: "CSV와 이미지 업로드를 수행합니다." },
   ];
 
   const saveAccessToken = () => {
@@ -35,7 +36,7 @@ export default function Dshelper() {
             <div className="text-uppercase small fw-bold text-primary mb-2">DSHelper Admin</div>
             <h2 className="display-6 fw-bold mb-2">관리자 홈</h2>
             <p className="mb-0 text-secondary">
-              인증 처리, 문의 응답, 예약 관리, 게시글 등록을 이 화면에서 빠르게 시작할 수 있습니다.
+              인증 처리, 문의 응답, 예약 관리, 게시글 등록, 쓰레기통 업로드를 이 화면에서 빠르게 시작할 수 있습니다.
             </p>
           </div>
           <span className="badge rounded-pill text-bg-primary fs-6 px-4 py-3">Dashboard</span>

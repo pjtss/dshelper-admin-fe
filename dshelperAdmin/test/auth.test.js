@@ -264,7 +264,8 @@ await runTest("Pages.md documents every current route", async () => {
   assert.match(source, /`\/oauth\/kakao\/callback`/);
   assert.match(source, /`\/admin\/inquiry`/);
   assert.match(source, /`\/admin\/reservations`/);
-  assert.match(source, /`\/admin\/create-post`/);
+  assert.ok(source.includes("/admin/create-post"));
+  assert.ok(source.includes("/admin/trash-bins"));
 });
 
 await runTest("Bootstrap-based classes are applied to home, inquiry, reservation, and post pages", async () => {
@@ -282,3 +283,36 @@ await runTest("Bootstrap-based classes are applied to home, inquiry, reservation
   assert.match(postSource, /form-control form-control-lg/);
   assert.match(buttonSource, /btn btn-primary btn-lg/);
 });
+
+
+await runTest("trash bin upload service uses backend contract endpoints and multipart part names", async () => {
+  const source = readFileSync(new URL("../src/services/TrashBinService.js", import.meta.url), "utf8");
+
+  assert.match(source, /formData\.append\("file", file\)/);
+  assert.match(source, /formData\.append\("image", image\)/);
+  assert.match(source, /apiClient\.post\("\/trash-bins\/upload"/);
+  assert.match(source, /apiClient\.post\("\/trash-bins\/images"/);
+  assert.match(source, /apiClient\.get\("\/trash-bins"/);
+  assert.match(source, /page: params\.page \?\? 0/);
+  assert.match(source, /size: params\.size \?\? 10/);
+  assert.match(source, /sort: params\.sort \?\? "desc"/);
+  assert.match(source, /sortBy: params\.sortBy \?\? "createdAt"/);
+  assert.match(source, /response\?\.data\?\.data \?\? response\?\.data/);
+});
+
+await runTest("trash bin admin route and navigation are wired into the frontend", async () => {
+  const appSource = readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
+  const homeSource = readFileSync(new URL("../src/components/Dshelper.jsx", import.meta.url), "utf8");
+  const sidebarSource = readFileSync(new URL("../src/layout/AdminSidebar.jsx", import.meta.url), "utf8");
+  const pageSource = readFileSync(new URL("../src/pages/TrashBinAdminPage.jsx", import.meta.url), "utf8");
+
+  assert.match(appSource, /path="\/admin\/trash-bins"/);
+  assert.match(homeSource, /navigate\("\/admin\/trash-bins"\)/);
+  assert.match(sidebarSource, /"\/admin\/trash-bins"/);
+  assert.match(pageSource, /POST \/trash-bins\/upload/);
+  assert.match(pageSource, /POST \/trash-bins\/images/);
+  assert.match(pageSource, /쓰레기통 목록/);
+});
+
+
+

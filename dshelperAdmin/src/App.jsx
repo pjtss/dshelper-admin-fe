@@ -1,9 +1,9 @@
-﻿// App.jsx
-import Dshelper from "@/components/Dshelper";
+﻿import Dshelper from "@/components/Dshelper";
 import InquiryList from "@/components/admin/InquiryList";
 import AdminReservations from "@/services/PersonalReservationService.jsx";
 import PostCreatePage from "@/pages/PostCreatePage.jsx";
 import KakaoCallbackPage from "@/pages/KakaoCallbackPage.jsx";
+import TrashBinAdminPage from "@/pages/TrashBinAdminPage.jsx";
 import AdminLayout from "@/layout/AdminLayout.jsx";
 
 import { Routes, Route } from "react-router-dom";
@@ -45,6 +45,15 @@ function App() {
         element={
           <AdminLayout>
             <PostCreatePage />
+          </AdminLayout>
+        }
+      />
+
+      <Route
+        path="/admin/trash-bins"
+        element={
+          <AdminLayout>
+            <TrashBinAdminPage />
           </AdminLayout>
         }
       />

@@ -5,6 +5,7 @@ const navigationItems = [
   { to: "/admin/inquiry", label: "문의 관리" },
   { to: "/admin/reservations", label: "예약 관리" },
   { to: "/admin/create-post", label: "게시글 작성" },
+  { to: "/admin/trash-bins", label: "쓰레기통 업로드" },
 ];
 
 export default function AdminSidebar() {

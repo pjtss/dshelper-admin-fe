@@ -20,6 +20,7 @@
   - 문의 관리
   - 예약 관리
   - 게시글 작성
+  - 쓰레기통 업로드
 
 ## 2. 카카오 로그인 콜백
 - 경로: `/oauth/kakao/callback`
@@ -61,7 +62,19 @@
   - 완료
   - 취소
 
-## 5. 게시글 작성
+## 5. 쓰레기통 업로드 관리
+- 경로: `/admin/trash-bins`
+- 파일: [TrashBinAdminPage.jsx](C:\Users\dldbs\Desktop\dshelper-admin-fe\dshelperAdmin\src\pages\TrashBinAdminPage.jsx)
+- 서비스: [TrashBinService.js](C:\Users\dldbs\Desktop\dshelper-admin-fe\dshelperAdmin\src\services\TrashBinService.js)
+
+### 기능
+- 쓰레기통 CSV 파일 업로드
+- 쓰레기통 대표 이미지 파일 업로드
+- 업로드 결과 확인
+- 저장된 쓰레기통 목록 조회
+- 페이지 단위 목록 이동
+
+## 6. 게시글 작성
 - 경로: `/admin/create-post`
 - 파일: [PostCreatePage.jsx](C:\Users\dldbs\Desktop\dshelper-admin-fe\dshelperAdmin\src\pages\PostCreatePage.jsx)
 - 폼: [PostCreateForm.jsx](C:\Users\dldbs\Desktop\dshelper-admin-fe\dshelperAdmin\src\components\posts\PostCreateForm.jsx)
